@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="BJTtoUTC/src"/>
+	<classpathentry kind="src" path="JGWeek0/src"/>
+	<classpathentry kind="src" path="JJWeek01/Homework_J01/src"/>
+	<classpathentry kind="src" path="JJWeek01/Shapes/src"/>
+	<classpathentry kind="src" path="JJWeek01/VendingMachine/src"/>
+	<classpathentry kind="src" path="Week03/Homework_w3_01/src"/>
+	<classpathentry kind="src" path="Week03/Homework_w3_02/src"/>
+	<classpathentry kind="src" path="Week03/src"/>
+	<classpathentry kind="src" path="Week04/Homework_w4_02/src"/>
+	<classpathentry kind="src" path="Week04/Homework_w4_03/src"/>
+	<classpathentry kind="src" path="Week04/src"/>
+	<classpathentry kind="src" path="Week05/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="BJTtoUTC/bin"/>
+</classpath>

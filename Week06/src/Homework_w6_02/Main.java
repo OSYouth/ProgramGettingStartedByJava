@@ -1,0 +1,108 @@
+/*
+ * 这道题真的是恶心到我了，自己写了半天的时间最后也只A对了一个测试样例，只好在网上找源码，结果找到一个很不错的用函数结构的
+ * 忽略函数的调用，大体结构逻辑都一样，但是人家的就对了，我的却全错了，更可笑的是按照他的结构我重新写了一遍代码，结果submit还是全错
+ * 还有讽刺的就是去掉不检查是否定位的标志结果还对了。。。期间还想过是不是条件太多，运算符顺序的问题，虽然人家三个与对了，但是
+ * 我试了加括号试了改成三重if结果还是。。。总之不知道哪里出现的问题荒废了一天
+ * 
+ * 
+ * GPS数据处理（6分）
+题目内容：
+NMEA-0183协议是为了在不同的GPS（全球定位系统）导航设备中建立统一的BTCM（海事无线电技术委员会）标准，由美国国家海洋电子协会（NMEA-The National Marine Electronics Associa-tion）制定的一套通讯协议。GPS接收机根据NMEA-0183协议的标准规范，将位置、速度等信息通过串口传送到PC机、PDA等设备。
+NMEA-0183协议是GPS接收机应当遵守的标准协议，也是目前GPS接收机上使用最广泛的协议，大多数常见的GPS接收机、GPS数据处理软件、导航软件都遵守或者至少兼容这个协议。
+NMEA-0183协议定义的语句非常多，但是常用的或者说兼容性最广的语句只有$GPGGA、$GPGSA、$GPGSV、$GPRMC、$GPVTG、$GPGLL等。
+
+其中$GPRMC语句的样例如下：
+$GPRMC,024813.640,A,3158.4608,N,11848.3737,E,10.05,324.27,150706,,,A*50
+这里整条语句是一个文本行，行中以逗号“,”隔开各个字段，每个字段的大小（长度）不一，这里的示例只是一种可能，并不能认为字段的大小就如上述例句一样。
+        字段0：$GPRMC，语句ID，表明该语句为推荐最小定位信息
+        字段1：UTC时间，hhmmss.sss格式
+        字段2：状态，A=定位，V=未定位
+        字段3：纬度ddmm.mmmm，度分格式（前导位数不足则补0）
+        字段4：纬度N（北纬）或S（南纬）
+        字段5：经度dddmm.mmmm，度分格式（前导位数不足则补0）
+        字段6：经度E（东经）或W（西经）
+        字段7：速度，节，Knots
+        字段8：方位角，度
+        字段9：UTC日期，DDMMYY格式
+        字段10：磁偏角，（000 - 180）度（前导位数不足则补0）
+        字段11：磁偏角方向，E=东W=西
+        字段16：校验值
+这里，“*”为校验和识别符，其后面的两位数为校验和，代表了“$”和“*”之间所有字符（不包括这两个字符）的异或值的十六进制值。上面这条例句的校验和是十六进制的50，也就是十进制的80。
+
+提示：^运算符的作用是异或。将$和*之间所有的字符做^运算(第一个字符和第二个字符异或，结果再和第三个字符异或，依此类推)之后的值对65536取余后的结果，应该和*后面的两个十六进制数字的值相等，否则的话说明这条语句在传输中发生了错误。注意这个十六进制值中是会出现A-F的大写字母的。另外，如果你需要的话，可以用Integer.parseInt(s)从String变量s中得到其所表达的整数数字；而Integer.parseInt(s, 16)从String变量s中得到其所表达的十六进制数字
+
+现在，你的程序要读入一系列GPS输出，其中包含$GPRMC，也包含其他语句。在数据的最后，有一行单独的
+END
+表示数据的结束。
+
+你的程序要从中找出$GPRMC语句，计算校验和，找出其中校验正确并且字段2表示已定位的语句，从中计算出时间，换算成北京时间。一次数据中会包含多条$GPRMC语句，以最后一条语句得到的北京时间作为结果输出。
+
+测试数据保证了你的程序一定会读到一条有效的$GPRMC语句。
+
+输入格式:
+多条GPS语句，每条均以回车换行结束。最后一行是END三个大写字母。
+
+输出格式：
+6位数时间，表达为：
+hh:mm:ss
+其中，hh是两位数的小时，不足两位时前面补0；mm是两位数的分钟，不足两位时前面补0；ss是两位数的秒，不足两位时前面补0。
+
+输入样例：
+$GPRMC,024813.640,A,3158.4608,N,11848.3737,E,10.05,324.27,150706,,,A*50
+END
+
+输出样例：
+10:48:13
+时间限制：500ms内存限制：32000kb
+ * 
+ */
+
+
+package Homework_w6_02;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner in = new Scanner(System.in);
+		String gpsdata = "";
+		String s = in.nextLine();
+		while( s.equals("END")==false )
+		{
+			if(s.substring(0,6).equals("$GPRMC"))
+//			if( (s.substring(0,6).equals("$GPRMC"))
+//					&& (s.substring(17,20).equals(",A,"))
+//					&& (s.lastIndexOf("A*")!=-1))
+			{
+//				System.out.println(s.substring(17,20).equals(",A,"));
+//				System.out.println((s.lastIndexOf("A*")!=-1));
+				int start = s.indexOf('$');
+				int end = s.indexOf('*');
+				int result = s.charAt( start+1 );
+				for( int i=start+2; i<end; i++)
+				{
+					result = result^s.charAt(i);
+				}
+				result = result % 65536;
+				int check = Integer.parseInt(s.substring(end+1, s.length()), 16);
+				if( check==result )
+				{
+					gpsdata = s;
+				}
+			}
+			s = in.nextLine();
+		}
+		int hour = Integer.parseInt(gpsdata.substring(gpsdata.indexOf(',')+1,gpsdata.indexOf(',')+3 ));
+		hour = (hour+8)%24;
+		if( hour<10 )
+		{
+			System.out.println("0"+hour+":"+gpsdata.substring(9,11)+":"+gpsdata.substring(11,13));
+		}
+		else
+		{
+			System.out.println(hour+":"+gpsdata.substring(9,11)+":"+gpsdata.substring(11,13));					
+		}
+	}
+}
